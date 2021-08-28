@@ -7,12 +7,16 @@ import 'WebClient.dart';
 /// Class that controls the User Inputs and Outputs to the console
 class ConsoleUI {
   var webService = 'http://www.cs.utep.edu/cheon/cs4381/homework/quiz/';
+  var questionsWrong = [];
+  var quizLength = 0;
 
   String getURL() {
     return webService;
   }
 
   String start(var webClient) {
+    questionsWrong = [];
+    quizLength = 0;
     print(
         'Hello user! What would you like to do? \n1. Practice\n2. Take a Quiz');
     var line = stdin.readLineSync();
@@ -26,25 +30,14 @@ class ConsoleUI {
     }
   }
 
-  String takeQuiz(var response) {
-    var quizLength = response['quiz']['question'].length;
+  /// This method displays the selected quiz and let's the user respond.
+  int takeQuiz(var response) {
+    quizLength = response['quiz']['question'].length;
     print("\n\nThis quiz has " + quizLength.toString() + " questions!");
     var answers = [];
-    var userChoices = [
-      1,
-      "Dart",
-      1,
-      "1",
-      "build",
-      1,
-      1,
-      'doctor',
-      'hot reloading',
-      1
-    ];
+    var userChoices = [];
     var userChoice;
     for (var i = 0; i < quizLength; i++) {
-      //type 1 = choices
       var type = response['quiz']['question'][i]['type'];
       var question = response['quiz']['question'][i]['stem'];
       var choices = response['quiz']['question'][i]['option'];
@@ -55,24 +48,55 @@ class ConsoleUI {
         for (var i = 0; i < choices.length; i++) {
           print((i + 1).toString() + '. ' + choices[i]);
         }
-        //   userChoice = int.parse(stdin.readLineSync());
-        // } else {
-        //   userChoice = stdin.readLineSync();
+        userChoice = int.parse(stdin.readLineSync());
+      } else {
+        userChoice = stdin.readLineSync();
       }
-      // userChoices.add(userChoice);
+      userChoices.add(userChoice);
       print(answers);
     }
     return _getScore(answers, userChoices);
   }
 
   void displayScore(var score) {
+    var grade = score / quizLength * 100;
+    switch (score) {
+      case 0:
+        {
+          print("Outstanding work! Perfect score!");
+          break;
+        }
+      case 1:
+        {
+          print("You only missed question " + questionsWrong[0].toString());
+          print("\u001b[33mGrade " + grade.toString() + "%\u001b[0m");
+          break;
+        }
+      default:
+        {
+          var missed = "You missed questions: ";
+          for (var i = 0; i < questionsWrong.length - 1; i++) {
+            missed = missed + questionsWrong[i].toString() + ' ';
+          }
+          missed = missed +
+              'and ' +
+              questionsWrong[questionsWrong.length - 1].toString();
+          print(missed);
+          print("\u001b[33mGrade " + grade.toString() + "%\u001b[0m");
+        }
+        break;
+    }
+
     //if score < 90
     //< 80
     //<70
   }
-  String _getScore(var answers, var userChoices) {
+
+  int _getScore(var answers, var userChoices) {
     var score = 0;
+    var current = score;
     for (var i = 0; i < answers.length; i++) {
+      current = score;
       if (answers[i] is List) {
         for (var j = 0; j < answers[i].length; j++) {
           if (answers[i][j].toLowerCase() ==
@@ -81,13 +105,14 @@ class ConsoleUI {
             break;
           }
         }
-      }
-      if (answers[i] == userChoices[i]) {
+      } else if (answers[i] == userChoices[i]) {
         score++;
       }
+      if (current == score) {
+        questionsWrong.add(i + 1);
+      }
     }
-    print(score);
-    return null;
+    return score;
     //note that the open ended answers are in a list and can be any choice in the list
   }
 }

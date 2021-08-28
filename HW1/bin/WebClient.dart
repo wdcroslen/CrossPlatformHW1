@@ -25,7 +25,7 @@ class WebClient {
     return webService;
   }
 
-  // String getRandomQuestions() {
+  // String generatePracticeQuiz {
   // Return a response but just alter the question list
   //   // Get random questions by going through x different quizzes and choosing a random question e.x: (rand(lengthOfQuestions))
   // }

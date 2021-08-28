@@ -16,15 +16,6 @@ class WebClient {
     return response;
   }
 
-  /// Calls the url to play the game with a specific move
-  // Future playGame(url, move, pid) async {
-  //   var gameURL = url + '/play/?pid=$pid&move=$move';
-  //   print('GAME URL: $gameURL\n');
-  //   var json = await getResponse(gameURL, gameURL);
-  //   print('MOVE RESPONSE: $json\n');
-  //   return json; //returns move response to check if the game is over
-  // }
-
   dynamic parseJson(var response) {
     return json.decode(response);
   }

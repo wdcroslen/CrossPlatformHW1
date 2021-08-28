@@ -12,14 +12,6 @@ class ConsoleUI {
     return webService;
   }
 
-  String getUserChoice(var response) {
-    print('Type something!:');
-    var line = stdin.readLineSync();
-    var userChoice = line.toString();
-    // webService = webService;
-    return webService;
-  }
-
   String selectQuiz() {
     print(
         'Hello user! What quiz would you like to take? \nEnter a number 0-99:');

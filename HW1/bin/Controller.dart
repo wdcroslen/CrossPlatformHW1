@@ -2,7 +2,7 @@ import 'ConsoleUI.dart';
 import 'WebClient.dart';
 
 // William Croslen
-///main controller method that calls all the other methods and classes
+/// Main controller method that calls all the other methods and classes
 
 class Controller {
   var console = ConsoleUI();
@@ -11,7 +11,13 @@ class Controller {
   Future<void> start() async {
     var webClient = WebClient();
     var webService = console.getURL();
-    var quiz = console.selectQuiz();
+    var quiz = console.start(webClient);
+
+    if (quiz == "Practice") {
+      print("Here is your practice");
+      return;
+    }
+
     var response = await webClient.getResponse(Uri.parse(quiz));
     var score = console.takeQuiz(response);
 

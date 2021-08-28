@@ -16,6 +16,20 @@ class WebClient {
     return response;
   }
 
+  String getQuiz(var userChoice, var webService) {
+    if (userChoice < 10) {
+      webService = webService + '?quiz=quiz0' + userChoice.toString();
+    } else {
+      webService = webService + '?quiz=quiz' + userChoice.toString();
+    }
+    return webService;
+  }
+
+  // String getRandomQuestions() {
+  // Return a response but just alter the question list
+  //   // Get random questions by going through x different quizzes and choosing a random question e.x: (rand(lengthOfQuestions))
+  // }
+
   dynamic parseJson(var response) {
     return json.decode(response);
   }

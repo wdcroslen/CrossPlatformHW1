@@ -14,6 +14,10 @@ class ConsoleUI {
     return webService;
   }
 
+  int getQuizLength() {
+    return quizLength;
+  }
+
   String start(var webClient) {
     questionsWrong = [];
     quizLength = 0;
@@ -21,6 +25,8 @@ class ConsoleUI {
         'Hello user! What would you like to do? \n1. Practice\n2. Take a Quiz');
     var line = stdin.readLineSync();
     if (int.parse(line) == 1) {
+      print("How long do you want your quiz?");
+      quizLength = int.parse(stdin.readLineSync());
       return "Practice";
     } else {
       print('What quiz would you like to take? \nEnter a number 0-99:');
@@ -58,17 +64,20 @@ class ConsoleUI {
     return _getScore(answers, userChoices);
   }
 
+  /// Displays the score to the user
   void displayScore(var score) {
     var grade = score / quizLength * 100;
-    switch (score) {
-      case 0:
+    switch (grade ~/ 10) {
+      case 10:
         {
+          print("\u001b[36mGrade " + grade.toString() + "%\u001b[0m");
           print("Outstanding work! Perfect score!");
           break;
         }
-      case 1:
+      case 9:
         {
-          print("You only missed question " + questionsWrong[0].toString());
+          var missed = "You missed question: ";
+          missed = missed + questionsWrong[0].toString();
           print("\u001b[33mGrade " + grade.toString() + "%\u001b[0m");
           break;
         }
@@ -81,17 +90,13 @@ class ConsoleUI {
           missed = missed +
               'and ' +
               questionsWrong[questionsWrong.length - 1].toString();
-          print(missed);
           print("\u001b[33mGrade " + grade.toString() + "%\u001b[0m");
         }
         break;
     }
-
-    //if score < 90
-    //< 80
-    //<70
   }
 
+  /// Helper method to calculate the score of the user based on their choices
   int _getScore(var answers, var userChoices) {
     var score = 0;
     var current = score;
@@ -113,6 +118,5 @@ class ConsoleUI {
       }
     }
     return score;
-    //note that the open ended answers are in a list and can be any choice in the list
   }
 }

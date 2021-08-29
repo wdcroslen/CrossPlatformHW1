@@ -16,11 +16,10 @@ class Controller {
     if (quiz == "Practice") {
       var practiceQuiz = await webClient.generatePracticeQuiz(
           console.getQuizLength(), webService);
-      print("Here is your practice");
-
       var score = console.takeQuiz(practiceQuiz);
       console.displayScore(score);
 
+      print(console.getAnswers());
       return;
     }
 

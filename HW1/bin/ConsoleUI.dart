@@ -9,6 +9,7 @@ class ConsoleUI {
   var webService = 'http://www.cs.utep.edu/cheon/cs4381/homework/quiz/';
   var questionsWrong = [];
   var quizLength = 0;
+  var answers = [];
 
   String getURL() {
     return webService;
@@ -16,6 +17,10 @@ class ConsoleUI {
 
   int getQuizLength() {
     return quizLength;
+  }
+
+  List getAnswers() {
+    return answers;
   }
 
   String start(var webClient) {
@@ -40,7 +45,6 @@ class ConsoleUI {
   int takeQuiz(var response) {
     quizLength = response['quiz']['question'].length;
     print("\n\nThis quiz has " + quizLength.toString() + " questions!");
-    var answers = [];
     var userChoices = [];
     var userChoice;
     for (var i = 0; i < quizLength; i++) {
@@ -59,7 +63,6 @@ class ConsoleUI {
         userChoice = stdin.readLineSync();
       }
       userChoices.add(userChoice);
-      print(answers);
     }
     return _getScore(answers, userChoices);
   }
@@ -79,6 +82,18 @@ class ConsoleUI {
           var missed = "You missed question: ";
           missed = missed + questionsWrong[0].toString();
           print("\u001b[33mGrade " + grade.toString() + "%\u001b[0m");
+          break;
+        }
+      case 0:
+        {
+          var missed = "You missed questions: ";
+          for (var i = 0; i < questionsWrong.length - 1; i++) {
+            missed = missed + questionsWrong[i].toString() + ' ';
+          }
+          missed = missed +
+              'and ' +
+              questionsWrong[questionsWrong.length - 1].toString();
+          print("\u001b[31mGrade " + grade.toString() + "%\u001b[0m");
           break;
         }
       default:

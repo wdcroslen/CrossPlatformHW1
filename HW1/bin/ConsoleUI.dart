@@ -1,27 +1,11 @@
 import 'dart:io';
 
-import 'package:http/http.dart';
-
-import 'WebClient.dart';
-
 /// Class that controls the User Inputs and Outputs to the console
 class ConsoleUI {
   var webService = 'http://www.cs.utep.edu/cheon/cs4381/homework/quiz/';
   var questionsWrong = [];
   var quizLength = 0;
   var answers = [];
-
-  String getURL() {
-    return webService;
-  }
-
-  int getQuizLength() {
-    return quizLength;
-  }
-
-  List getAnswers() {
-    return answers;
-  }
 
   String start(var webClient) {
     questionsWrong = [];

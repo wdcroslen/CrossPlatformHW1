@@ -9,7 +9,7 @@ class WebClient {
     // print('Obtaining Server Information...');
     var response;
     if (url == null) {
-      print("Oh NO!");
+      print("Oh NO your url isn't right!!");
     } else {
       response = await http.get(url);
     }

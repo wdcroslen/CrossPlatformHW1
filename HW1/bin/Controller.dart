@@ -10,16 +10,16 @@ class Controller {
 
   Future<void> start() async {
     var webClient = WebClient();
-    var webService = console.getURL();
+    var webService = console.webService;
     var quiz = console.start(webClient);
 
     if (quiz == "Practice") {
-      var practiceQuiz = await webClient.generatePracticeQuiz(
-          console.getQuizLength(), webService);
+      var practiceQuiz =
+          await webClient.generatePracticeQuiz(console.quizLength, webService);
       var score = console.takeQuiz(practiceQuiz);
       console.displayScore(score);
 
-      print(console.getAnswers());
+      print(console.answers);
       return;
     }
 

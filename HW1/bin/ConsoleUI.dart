@@ -1,24 +1,28 @@
 import 'dart:io';
 
+import 'package:test/expect.dart';
+
+import 'MultipleChoiceQuestion.dart';
+
 /// Class that controls the User Inputs and Outputs to the console
 class ConsoleUI {
   var webService = 'http://www.cs.utep.edu/cheon/cs4381/homework/quiz/';
   var questionsWrong = [];
+  var questionList = [];
   var quizLength = 0;
   var answers = [];
 
   String start(var webClient) {
-    questionsWrong = [];
     quizLength = 0;
     print(
         'Hello user! What would you like to do? \n1. Practice\n2. Take a Quiz');
     var line = stdin.readLineSync();
-    if (int.parse(line) == 1) {
+    if (line == '1') {
       print("How long do you want your quiz?");
       quizLength = int.parse(stdin.readLineSync());
       return "Practice";
     } else {
-      print('What quiz would you like to take? \nEnter a number 0-99:');
+      print('What quiz would you like to take? \nEnter a number 0-10:');
       var line = stdin.readLineSync();
       var userChoice = int.parse(line);
       return webClient.getQuiz(userChoice, webService);
@@ -26,29 +30,32 @@ class ConsoleUI {
   }
 
   /// This method displays the selected quiz and let's the user respond.
-  int takeQuiz(var response) {
-    quizLength = response['quiz']['question'].length;
-    print("\n\nThis quiz has " + quizLength.toString() + " questions!");
-    var userChoices = [];
+  int takeQuiz(var questionList) {
+    quizLength = questionList.length;
+    print("\nThis quiz has " + quizLength.toString() + " questions!");
     var userChoice;
-    for (var i = 0; i < quizLength; i++) {
-      var type = response['quiz']['question'][i]['type'];
-      var question = response['quiz']['question'][i]['stem'];
-      var choices = response['quiz']['question'][i]['option'];
-      answers.add(response['quiz']['question'][i]['answer']);
+    var i = 0;
+    while (i < quizLength) {
       print("\u001b[32mQuestion " + (i + 1).toString() + "\u001b[0m");
-      print(question);
-      if (type == 1) {
-        for (var i = 0; i < choices.length; i++) {
-          print((i + 1).toString() + '. ' + choices[i]);
-        }
-        userChoice = int.parse(stdin.readLineSync());
-      } else {
-        userChoice = stdin.readLineSync();
+      print(questionList[i].getStem());
+      if (questionList[i].runtimeType.toString() == 'MultipleChoiceQuestion') {
+        questionList[i].displayOptions();
       }
-      userChoices.add(userChoice);
+      print("Enter your answer, p[revious] or n[ext] (default)");
+      userChoice = stdin.readLineSync();
+      if (userChoice == 'p' && i > 0) {
+        i--;
+        continue;
+      } else if (userChoice == 'n' && i < quizLength - 1) {
+        i++;
+        continue;
+      }
+      questionList[i].setUserAnswer(userChoice);
+      i++;
     }
-    return _getScore(answers, userChoices);
+    this.questionList = questionList;
+
+    return _getScore(questionList);
   }
 
   /// Displays the score to the user
@@ -93,29 +100,28 @@ class ConsoleUI {
         }
         break;
     }
+    print(score);
+    _printAnswers();
   }
 
   /// Helper method to calculate the score of the user based on their choices
-  int _getScore(var answers, var userChoices) {
+  int _getScore(var questionList) {
     var score = 0;
-    var current = score;
-    for (var i = 0; i < answers.length; i++) {
-      current = score;
-      if (answers[i] is List) {
-        for (var j = 0; j < answers[i].length; j++) {
-          if (answers[i][j].toLowerCase() ==
-              userChoices[i].toString().toLowerCase()) {
-            score++;
-            break;
-          }
-        }
-      } else if (answers[i] == userChoices[i]) {
+    for (var i = 0; i < questionList.length; i++) {
+      if (questionList[i].isCorrect()) {
         score++;
-      }
-      if (current == score) {
-        questionsWrong.add(i + 1);
+      } else {
+        questionsWrong.add(i);
       }
     }
     return score;
+  }
+
+  List _printAnswers() {
+    var answerList = [];
+    for (var i = 0; i < questionList.length; i++) {
+      answerList.add(questionList[i].getAnswer());
+    }
+    print(answerList);
   }
 }

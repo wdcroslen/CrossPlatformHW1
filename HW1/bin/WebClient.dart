@@ -1,6 +1,8 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:math';
+import 'FillInQuestion.dart';
+import 'MultipleChoiceQuestion.dart';
 
 /// Class the interacts with the server
 class WebClient {
@@ -44,31 +46,53 @@ class WebClient {
   }
 
   Future generatePracticeQuiz(var quizLength, var webService) async {
-    // Return a response but just alter the question list
-    // need a set to ignore repeating random questions
-    // might need to consider doing 2 questions from a given quiz depending on how long the response takes
+    // Return list of Questions
     var randomURLs = [];
     var rand = Random();
+    var questionList = [];
     webService = webService + '?quiz=quiz0';
     for (var i = 0; i < quizLength; i++) {
       randomURLs.add(webService + (rand.nextInt(3) + 1).toString());
     }
-    print(randomURLs);
-    var response = await getResponse(Uri.parse((randomURLs[0])));
-    var question = response['quiz']['question'];
-    var q = question[rand.nextInt(question.length)];
-    question = [];
-    question.add(q);
 
-    for (var i = 1; i < randomURLs.length; i++) {
-      var tempQuestion = await getQuestion(Uri.parse(randomURLs[i]));
-      question.add(tempQuestion);
+    print(randomURLs);
+
+    for (var i = 0; i < randomURLs.length; i++) {
+      var response = await getResponse(Uri.parse(randomURLs[i]));
+      var questionResponse = response['quiz']['question'];
+      var questionJSON =
+          questionResponse[rand.nextInt(questionResponse.length)];
+
+      var type = questionJSON['type'];
+      var question = (type == 1)
+          ? MultipleChoiceQuestion.option(
+              response['quiz']['question'][i]['option'])
+          : FillInQuestion();
+      question.setStem(response['quiz']['question'][i]['stem']);
+      question.setAnswer(response['quiz']['question'][i]['answer'].toString());
+
+      questionList.add(question);
     }
 
-    response['quiz']['question'] = question;
+    return questionList;
+  }
 
-    return response;
-    // Get random questions by going through x different quizzes and choosing a random question e.x: (rand(lengthOfQuestions))
+  Future generateQuiz(var response) async {
+    var questionList = [];
+    var quizLength = response['quiz']['question'].length;
+    for (var i = 0; i < quizLength; i++) {
+      var type = response['quiz']['question'][i]['type'];
+      var question = (type == 1)
+          ? MultipleChoiceQuestion.option(
+              response['quiz']['question'][i]['option'])
+          : FillInQuestion();
+
+      question.setStem(response['quiz']['question'][i]['stem']);
+      question.setAnswer(response['quiz']['question'][i]['answer'].toString());
+      questionList.add(question);
+    }
+    print(questionList);
+    return questionList;
   }
 
   dynamic parseJson(var response) {

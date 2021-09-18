@@ -24,7 +24,8 @@ class Controller {
     }
 
     var response = await webClient.getResponse(Uri.parse(quiz));
-    var score = console.takeQuiz(response);
+    var generatedQuiz = await webClient.generateQuiz(response);
+    var score = console.takeQuiz(generatedQuiz);
 
     console.displayScore(score);
   }

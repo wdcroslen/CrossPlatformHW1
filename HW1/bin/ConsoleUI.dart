@@ -68,50 +68,39 @@ class ConsoleUI {
           print("Outstanding work! Perfect score!");
           break;
         }
-      case 9:
-        {
-          var missed = "You missed question: ";
-          missed = missed + questionsWrong[0].toString();
-          print("\u001b[33mGrade " + grade.toString() + "%\u001b[0m");
-          break;
-        }
       case 0:
         {
-          var missed = "You missed questions: ";
-          for (var i = 0; i < questionsWrong.length - 1; i++) {
-            missed = missed + questionsWrong[i].toString() + ' ';
-          }
-          missed = missed +
-              'and ' +
-              questionsWrong[questionsWrong.length - 1].toString();
           print("\u001b[31mGrade " + grade.toString() + "%\u001b[0m");
           break;
         }
       default:
         {
-          var missed = "You missed questions: ";
-          for (var i = 0; i < questionsWrong.length - 1; i++) {
-            missed = missed + questionsWrong[i].toString() + ' ';
-          }
-          missed = missed +
-              'and ' +
-              questionsWrong[questionsWrong.length - 1].toString();
           print("\u001b[33mGrade " + grade.toString() + "%\u001b[0m");
         }
         break;
     }
-    print(score);
     _printAnswers();
+    if (!questionsWrong.isEmpty) {
+      print("Would you like to review your missed questions?  [Y/N]");
+      var line = stdin.readLineSync();
+      if (line.toLowerCase() == "y") {
+        var score = takeQuiz(questionsWrong);
+        displayScore(score);
+        return;
+      }
+    }
+    print("Goodbye!");
   }
 
   /// Helper method to calculate the score of the user based on their choices
   int _getScore(var questionList) {
+    questionsWrong = [];
     var score = 0;
     for (var i = 0; i < questionList.length; i++) {
       if (questionList[i].isCorrect()) {
         score++;
       } else {
-        questionsWrong.add(i);
+        questionsWrong.add(questionList[i]);
       }
     }
     return score;

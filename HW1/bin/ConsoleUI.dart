@@ -7,6 +7,7 @@ class ConsoleUI {
   var questionList = [];
   var quizLength = 0;
 
+  /// Start, displays the first message to let the user start taking the quiz.
   String start(var webClient) {
     quizLength = 0;
     print(
@@ -101,7 +102,8 @@ class ConsoleUI {
     return score;
   }
 
-  List _printAnswers() {
+  /// Helper method that prints the answers to the quiz after it is taken.
+  void _printAnswers() {
     var answerList = [];
     for (var i = 0; i < questionList.length; i++) {
       answerList.add(questionList[i].getAnswer());

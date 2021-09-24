@@ -4,7 +4,7 @@ import 'dart:math';
 import 'FillInQuestion.dart';
 import 'MultipleChoiceQuestion.dart';
 
-/// Class the interacts with the server
+/// Class that interacts with the server
 class WebClient {
   /// Returns the json response from a server
   Future getResponse(var url) async {
@@ -27,8 +27,8 @@ class WebClient {
     return webService;
   }
 
+  /// Returns list of questions from random urls based on user-specified length.
   Future generatePracticeQuiz(var quizLength, var webService) async {
-    // Return list of Questions
     var randomURLs = [];
     var rand = Random();
     var questionList = [];
@@ -59,6 +59,7 @@ class WebClient {
     return questionList;
   }
 
+  /// returns a list of question objects based on the url of the quiz
   Future generateQuiz(var response) async {
     var questionList = [];
     var quizLength = response['quiz']['question'].length;

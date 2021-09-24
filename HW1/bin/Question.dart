@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class Question {
   String _stem = '';
   var _answer = '';
@@ -29,5 +31,11 @@ class Question {
 
   bool isCorrect() {
     return getAnswer() == getUserAnswer();
+  }
+
+  String promptUserAnswer() {
+    print(this._stem);
+    var line = stdin.readLineSync();
+    return line;
   }
 }

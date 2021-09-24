@@ -1,16 +1,11 @@
 import 'dart:io';
 
-import 'package:test/expect.dart';
-
-import 'MultipleChoiceQuestion.dart';
-
 /// Class that controls the User Inputs and Outputs to the console
 class ConsoleUI {
   var webService = 'http://www.cs.utep.edu/cheon/cs4381/homework/quiz/';
   var questionsWrong = [];
   var questionList = [];
   var quizLength = 0;
-  var answers = [];
 
   String start(var webClient) {
     quizLength = 0;

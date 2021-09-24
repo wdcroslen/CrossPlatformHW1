@@ -1,4 +1,5 @@
 import 'Question.dart';
+import 'dart:io';
 
 class MultipleChoiceQuestion extends Question {
   var _options = [];
@@ -25,5 +26,13 @@ class MultipleChoiceQuestion extends Question {
           ". \u001b[0m" +
           _options[i].toString());
     }
+  }
+
+  String promptUserAnswer() {
+    stdout.write(this.getStem());
+    displayOptions();
+    stdout.write("Enter your answer: ");
+    var line = stdin.readLineSync();
+    return line;
   }
 }

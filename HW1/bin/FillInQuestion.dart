@@ -1,7 +1,19 @@
+import 'package:http/http.dart';
+
 import 'Question.dart';
 
 class FillInQuestion extends Question {
   bool isCorrect() {
-    return getAnswer().toLowerCase() == getUserAnswer().toLowerCase();
+    var answer = getAnswer().replaceAll("[", "");
+    answer = answer.replaceAll("]", "");
+    List answerList = answer.split(',');
+
+    for (var i = 0; i < answerList.length; i++) {
+      if (answerList[i].toLowerCase() ==
+          getUserAnswer().toString().toLowerCase()) {
+        return true;
+      }
+    }
+    return false;
   }
 }

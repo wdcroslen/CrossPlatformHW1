@@ -18,8 +18,6 @@ class Controller {
           await webClient.generatePracticeQuiz(console.quizLength, webService);
       var score = console.takeQuiz(practiceQuiz);
       console.displayScore(score);
-
-      print(console.answers);
       return;
     }
 

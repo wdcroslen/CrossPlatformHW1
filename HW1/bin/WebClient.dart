@@ -8,7 +8,6 @@ import 'MultipleChoiceQuestion.dart';
 class WebClient {
   /// Returns the json response from a server
   Future getResponse(var url) async {
-    // print('Obtaining Server Information...');
     var response;
     if (url == null) {
       print("Oh NO your url isn't right!!");
@@ -17,23 +16,6 @@ class WebClient {
     }
     response = parseJson(response.body);
     return response;
-  }
-
-  Future getQuestion(var url) async {
-    // print('Obtaining Server Information...');
-    var response;
-    if (url == null) {
-      print("Oh NO!");
-    } else {
-      response = await http.get(url);
-    }
-    response = parseJson(response.body);
-    // print(response);
-    var rand = Random();
-    var quizLength = response['quiz']['question'].length;
-    var randomQuestion = rand.nextInt(quizLength);
-    var question = response['quiz']['question'][randomQuestion];
-    return question;
   }
 
   String getQuiz(var userChoice, var webService) {
@@ -91,7 +73,6 @@ class WebClient {
       question.setAnswer(response['quiz']['question'][i]['answer'].toString());
       questionList.add(question);
     }
-    print(questionList);
     return questionList;
   }
 
